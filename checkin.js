@@ -1,6 +1,6 @@
 const axios = require('axios')
 const { getCookie, getTraffic, getEmailAndPwdList, getDirectCookie } = require('./utils')
-const notify = require('./sendNotify')
+await QLAPI.notify('iKuuu VPN 流量统计', msg)
 
 const host = 'https://ikuuu.nl'
 const checkinURL = host + '/user/checkin'
