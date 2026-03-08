@@ -1,7 +1,7 @@
 const { initInstance, getEnv } = require('./qlApi.js')
 const axios = require('axios')
 
-const host = 'https://ikuuu.org'
+const host = 'https://ikuuu.nl'
 const loginURL = host + '/auth/login'
 const infoURL = host + '/user'
 const todayTrafficReg = /今日已用\n.*\s(\d+\.?\d*)([M|G|K]?B)/
