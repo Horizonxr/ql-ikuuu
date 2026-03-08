@@ -26,17 +26,13 @@ async function run() {
 
   if (directCookie) {
     let msg = '📌 Cookie 模式签到'
-    
     const checkinRes = await checkin(directCookie)
     console.log('签到结果：', checkinRes)
     msg += '\n' + checkinRes
-
     const arr = await getTraffic(directCookie)
     console.log('流量结果：', arr)
     msg += '\n' + arr.join('\n')
-
-    console.log('准备发送通知，内容：\n' + msg)
-    await notify.sendNotify('iKuuu VPN 签到通知', msg)
+    await QLAPI.notify('iKuuu VPN 签到通知', msg)
     console.log('通知发送完成')
   }
 }
