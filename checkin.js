@@ -1,5 +1,5 @@
 const axios = require('axios')
-const { getCookie, getTraffic, getEmailAndPwdList } = require('./utils')
+const { getCookie, getTraffic, getEmailAndPwdList, getDirectCookie } = require('./utils')
 const notify = require('./sendNotify')
 
 const host = 'https://ikuuu.nl'
@@ -23,18 +23,14 @@ async function checkin(cookie) {
 }
 
 async function run() {
-  const directCookie = getDirectCookie ? null : null // 占位，见下方说明
-  
-  // 先检查是否有直接 Cookie
-  const { getDirectCookie } = require('./utils')
-  const cookie = getDirectCookie()
-  
-  if (cookie) {
-    // Cookie 模式：直接签到
-    let msg = '📌 Cookie 模式'
-    const checkinRes = await checkin(cookie)
+  const directCookie = getDirectCookie()
+
+  if (directCookie) {
+    // ✅ Cookie 模式
+    let msg = '📌 Cookie 模式签到'
+    const checkinRes = await checkin(directCookie)
     msg += `\n${checkinRes}`
-    const arr = await getTraffic(cookie)
+    const arr = await getTraffic(directCookie)
     msg += `\n${arr.join('\n')}`
     await notify.sendNotify('iKuuu VPN 签到通知', msg)
   } else {
