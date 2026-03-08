@@ -1,6 +1,6 @@
 const axios = require('axios')
 const { getCookie, getTraffic, getEmailAndPwdList, getDirectCookie } = require('./utils')
-const notify = require('./sendNotify')
+const notify = require('/ql/data/scripts/sendNotify')
 
 const host = 'https://ikuuu.nl'
 const checkinURL = host + '/user/checkin'
@@ -32,7 +32,28 @@ async function run() {
     const arr = await getTraffic(directCookie)
     console.log('流量结果：', arr)
     msg += '\n' + arr.join('\n')
-    await QLAPI.notify('iKuuu VPN 签到通知', msg)
+    await notify.sendNotify('iKuuu VPN 签到通知', msg)
+    console.log('通知发送完成')
+  } else {
+    const [emailList, pwdList] = await getEmailAndPwdList()
+    const messages = []
+    for (let i = 0; i < emailList.length; i++) {
+      const email = emailList[i]
+      const pwd = pwdList[i]
+      let msg = '邮箱：' + emailList[i]
+      const cookie = await getCookie(email, pwd)
+      if (cookie.includes('登录失败')) {
+        msg += '\n' + cookie
+        messages.push(msg)
+        continue
+      }
+      const checkinRes = await checkin(cookie)
+      msg += '\n' + checkinRes
+      const arr = await getTraffic(cookie)
+      msg += '\n' + arr.join('\n')
+      messages.push(msg)
+    }
+    await notify.sendNotify('iKuuu VPN 签到通知', messages.join('\n\n========================\n\n'))
     console.log('通知发送完成')
   }
 }
