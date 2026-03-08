@@ -1,6 +1,5 @@
 const { getCookie, getTraffic, getEmailAndPwdList, getDirectCookie } = require('./utils')
-await QLAPI.notify('iKuuu VPN 签到通知', msg)
-
+const notify = require('./sendNotify')
 async function run() {
   const directCookie = getDirectCookie()
 
