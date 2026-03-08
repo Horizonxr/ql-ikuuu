@@ -23,26 +23,42 @@ async function checkin(cookie) {
 }
 
 async function run() {
-  const [emailList, pwdList] = await getEmailAndPwdList()
-  const messages = []
-  for (let i = 0; i < emailList.length; i++) {
-    const email = emailList[i]
-    const pwd = pwdList[i]
-    let msg = `邮箱：${emailList[i]}`
-    const cookie = await getCookie(email, pwd)
-    if (cookie.includes('登录失败')) {
-      msg += `\n${cookie}`
-      messages.push(msg)
-      continue
-    }
+  const directCookie = getDirectCookie ? null : null // 占位，见下方说明
+  
+  // 先检查是否有直接 Cookie
+  const { getDirectCookie } = require('./utils')
+  const cookie = getDirectCookie()
+  
+  if (cookie) {
+    // Cookie 模式：直接签到
+    let msg = '📌 Cookie 模式'
     const checkinRes = await checkin(cookie)
     msg += `\n${checkinRes}`
     const arr = await getTraffic(cookie)
     msg += `\n${arr.join('\n')}`
-    messages.push(msg)
+    await notify.sendNotify('iKuuu VPN 签到通知', msg)
+  } else {
+    // 账号密码模式（备用）
+    const [emailList, pwdList] = await getEmailAndPwdList()
+    const messages = []
+    for (let i = 0; i < emailList.length; i++) {
+      const email = emailList[i]
+      const pwd = pwdList[i]
+      let msg = `邮箱：${emailList[i]}`
+      const cookie = await getCookie(email, pwd)
+      if (cookie.includes('登录失败')) {
+        msg += `\n${cookie}`
+        messages.push(msg)
+        continue
+      }
+      const checkinRes = await checkin(cookie)
+      msg += `\n${checkinRes}`
+      const arr = await getTraffic(cookie)
+      msg += `\n${arr.join('\n')}`
+      messages.push(msg)
+    }
+    await notify.sendNotify('iKuuu VPN 签到通知', messages.join('\n\n========================\n\n'))
   }
-
-  await notify.sendNotify(`iKuuu VPN 签到通知`, messages.join('\n\n========================\n\n'))
 }
 
 run()
