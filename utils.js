@@ -58,6 +58,16 @@ async function getEmailAndPwdList() {
   return [emailList, pwdList]
 }
 
+/** 直接从环境变量读取 Cookie（跳过登录） */
+function getDirectCookie() {
+  const cookie = process.env.IKUUU_COOKIE
+  if (cookie) {
+    console.log('✅ 检测到 IKUUU_COOKIE，跳过登录直接使用')
+    return cookie.trim()
+  }
+  return null
+}
+
 /** 登录获取 cookie */
 async function getCookie(email, pwd) {
   const formData = new FormData()
