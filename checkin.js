@@ -2,7 +2,7 @@ const axios = require('axios')
 const { getCookie, getTraffic, getEmailAndPwdList } = require('./utils')
 const notify = require('./sendNotify')
 
-const host = 'https://ikuuu.org'
+const host = 'https://ikuuu.nl'
 const checkinURL = host + '/user/checkin'
 
 /** 签到 */
