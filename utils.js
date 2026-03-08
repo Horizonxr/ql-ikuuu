@@ -158,4 +158,13 @@ async function getTraffic(cookie) {
   }
 }
 
-module.exports = { getCookie, getTraffic, getEmailAndPwdList }
+function getDirectCookie() {
+  const cookie = process.env.IKUUU_COOKIE
+  if (cookie) {
+    console.log('✅ 检测到 IKUUU_COOKIE，跳过登录直接使用')
+    return cookie.trim()
+  }
+  return null
+}
+
+module.exports = { getCookie, getTraffic, getEmailAndPwdList, getDirectCookie }
